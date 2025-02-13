@@ -25,7 +25,7 @@ export default function SplashScreen({ onComplete}) {
         const data = {
           voiceId: 'en-US-terrell',
           style: 'Promo',
-          text: 'Team ${currentTeam.name} has gone to level ${currentTeam.passed}. Congratulations Team!!',
+          text: `Team ${currentTeam.name} has gone to level ${currentTeam.passed}. Congratulations Team!!`,
           rate: 0,
           pitch: -25,
           sampleRate: 48000,
@@ -54,6 +54,13 @@ export default function SplashScreen({ onComplete}) {
     fetchAudio();
   }, [currentTeam]);
 
+  useEffect(() => {
+    if (audioUrl) {
+      const audio = new Audio(audioUrl);
+      audio.play().catch(error => console.error("Autoplay blocked:", error));
+    }
+  }, [audioUrl]);
+
   const SortableZone = ({ zone, zoneIndex }) => {
   return (
     <AnimatePresence>
@@ -67,12 +74,12 @@ export default function SplashScreen({ onComplete}) {
     <div className="relative w-full h-screen flex items-center justify-center bg-black overflow-hidden">
       <img src="/glitch.jpg" alt="Glitch Background" className="absolute top-0 left-0 w-full h-full object-cover opacity-35 " />
       <img src="/dead.gif" alt="Loading" className="w-[800px] h-[390px] mb-14 animate-pulse" />
-      <h1 className="absolute bottom-5 text-orange-600 text-4xl font-extrabold font-orbitron drop-shadow-[4px_4px_5px_rgba(255,0,0,0.55)] ">
-        {zone.name} has passed {zone.passed}.
-      </h1>
-      <h2 className="absolute bottom-20 text-green-300 text-2xl font-extrabold font-orbitron drop-shadow-[4px_4px_5px_rgb(129, 199, 132,0.45)]">
+      <h2 className="absolute  bottom-5 text-green-300 text-2xl font-extrabold font-orbitron drop-shadow-[4px_4px_5px_rgb(129, 199, 132,0.45)]">
                 Congratulations {zone.name} !!
        </h2>
+       <h1 className="absolute  bottom-20 text-orange-600 text-4xl font-extrabold font-orbitron drop-shadow-[4px_4px_5px_rgba(255,0,0,0.55)] ">
+        {zone.name} has passed {zone.passed}.
+      </h1>
       {audioUrl && <audio autoPlay src={audioUrl} />} 
     </div>
     </motion.div>

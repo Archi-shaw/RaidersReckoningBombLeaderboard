@@ -17,7 +17,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Shield, Target } from 'lucide-react';
+import { Target } from 'lucide-react';
 import zonesData from "@/app/data/Leaderboard.json";
 
 const SortableTeam = ({ id, team, index }) => {
@@ -192,7 +192,6 @@ const ZonesDisplay = () => {
           {activeId ? (
             <div className="bg-red-900/20 p-4 rounded-md border border-red-500 shadow-2xl">
               <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-red-500" />
                 <span className="font-medium tracking-wide">
                   {activeId.split('-')[0]}
                 </span>

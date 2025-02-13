@@ -9,6 +9,7 @@ export default {
     extend: {
       fontFamily: {
         dseg7: ['DSEG7 Classic', 'sans-serif'],
+        orbitron: ["Orbitron", "sans-serif"],
       },
       colors: {
         background: "var(--background)",

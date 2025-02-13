@@ -2,11 +2,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import zone from "@/app/data/LeaderBoard.json";
 
 
 export default function SplashScreen({ onComplete}) {
   const [fadeOut, setFadeOut] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
+  const[currentTeam,setCurrentTeam] = useState(zone[0]);
   
   useEffect(() =>{
     const timer = setTimeout(() =>{
@@ -23,7 +25,7 @@ export default function SplashScreen({ onComplete}) {
         const data = {
           voiceId: 'en-US-terrell',
           style: 'Promo',
-          text: 'Team $ has gone to level 4. Congratulations Team!!',
+          text: 'Team ${currentTeam.name} has gone to level ${currentTeam.passed}. Congratulations Team!!',
           rate: 0,
           pitch: -25,
           sampleRate: 48000,
@@ -50,8 +52,9 @@ export default function SplashScreen({ onComplete}) {
     };
 
     fetchAudio();
-  }, []);
+  }, [currentTeam]);
 
+  const SortableZone = ({ zone, zoneIndex }) => {
   return (
     <AnimatePresence>
       {!fadeOut && (
@@ -63,14 +66,26 @@ export default function SplashScreen({ onComplete}) {
           transition={{ duration: 1 }}>
     <div className="relative w-full h-screen flex items-center justify-center bg-black overflow-hidden">
       <img src="/glitch.jpg" alt="Glitch Background" className="absolute top-0 left-0 w-full h-full object-cover opacity-35 " />
-      <img src="/dead.gif" alt="Loading" className="w-[800px] h-[425px] mb-14 animate-pulse" />
-      <h1 className="absolute bottom-5 text-orange-600 text-6xl font-extrabold font-orbitron drop-shadow-[4px_4px_5px_rgba(255,0,0,0.75)] ">
-        BOMB DIFFUSION
+      <img src="/dead.gif" alt="Loading" className="w-[800px] h-[390px] mb-14 animate-pulse" />
+      <h1 className="absolute bottom-5 text-orange-600 text-4xl font-extrabold font-orbitron drop-shadow-[4px_4px_5px_rgba(255,0,0,0.55)] ">
+        {zone.name} has passed {zone.passed}.
       </h1>
+      <h2 className="absolute bottom-20 text-green-300 text-2xl font-extrabold font-orbitron drop-shadow-[4px_4px_5px_rgb(129, 199, 132,0.45)]">
+                Congratulations {zone.name} !!
+       </h2>
       {audioUrl && <audio autoPlay src={audioUrl} />} 
     </div>
     </motion.div>
     )}
     </AnimatePresence>
   );
-}
+};
+
+return(
+    <div>
+      { zone.map((team,index) => (
+       <SortableZone key={index} zone={team} zoneIndex={index} />
+       ))}
+    </div>
+    )
+  };

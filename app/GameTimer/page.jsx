@@ -1,8 +1,8 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 
-const GameTimer = ({ intialMinute = 5, initialSecond = 0 }) => {
-  const [time, setTime] = useState({ minute: intialMinute, second: initialSecond });
+const GameTimer = ({ initialMinute = 5, initialSecond = 0 }) => {
+  const [time, setTime] = useState({ minute: initialMinute, second: initialSecond });
   const [date, setDate] = useState("");
 
   useEffect(() => {
@@ -26,16 +26,15 @@ const GameTimer = ({ intialMinute = 5, initialSecond = 0 }) => {
   }, []);
 
   return (
-    <div className="flex flex-row items-end justify-between mt-2 overflow-hidden">
-      <div className='text-white text-5xl mx-11 mb-5 font-serif font-bold'>  LEADERBOARD 🏆 </div>
-      <div className="flex mx-12 mt-3 gap-2">
-        <span className="font-dseg7 text-7xl text-orange-600 text-shadow-lg shadow-orange-500/50"> 
+    <div className=" flex flex-row items-end justify-between overflow-hidden">
+      <div className="flex gap-1 items-center">
+        <span className="font-dseg7 text-2xl text-orange-600 text-shadow-lg shadow-orange-500/50">
         {String(time.minute).padStart(2, "0")}
         </span>
-        <span className="font-dseg7 text-7xl text-orange-600 text-shadow-lg shadow-orange-500/50">
+        <span className="font-dseg7 text-2xl text-orange-600 text-shadow-lg shadow-orange-500/50">
           :
         </span>
-        <span className="font-dseg7 text-7xl text-orange-600 text-shadow-lg shadow-orange-500/50">
+        <span className="font-dseg7 text-2xl text-orange-600 text-shadow-lg shadow-orange-500/50">
           {String(time.second).padStart(2, "0")}
         </span>
       </div>

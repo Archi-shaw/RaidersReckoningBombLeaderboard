@@ -19,6 +19,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Target } from 'lucide-react';
 import {zone, zonesData} from "@/app/data/Leaderboard";
+import GameTimer from "@/app/GameTimer/page";
 
 const SortableTeam = ({ id, team, index }) => {
   const {
@@ -100,15 +101,20 @@ const SortableZone = ({ zone, zoneIndex }) => {
         <div className="absolute -inset-[1px] bg-gradient-to-r from-red-500/20 to-transparent rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <div>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 mb-3">
-              <Target className="w-6 h-6 text-red-500" />
-              <h2 className="text-xl md:text-2xl font-bold tracking-tight font-serif">{zone.name}</h2>
+            <div className="flex w-full justify-between items-center gap-3 mb-3">
+              <h2 className="flex items-center gap-2 text-xl md:text-2xl font-bold tracking-tight font-serif">
+                <Target className="w-6 h-6 text-red-500"/>
+                {zone.name}</h2>
+              <span className="font-dseg7 text-2xl text-orange-600 text-shadow-lg shadow-orange-500/50">
+                192.168.1.1
+              </span>
+              <GameTimer initialMinute={15} initialSecond={0}/>
             </div>
           </div>
 
           <SortableContext
-            items={zone.teams.map((team) => `${team}-${zoneIndex}`)}
-            strategy={verticalListSortingStrategy}
+              items={zone.teams.map((team) => `${team}-${zoneIndex}`)}
+              strategy={verticalListSortingStrategy}
           >
             <ul className="space-y-1">
               {zone.teams.map((team, index) => (
@@ -119,7 +125,7 @@ const SortableZone = ({ zone, zoneIndex }) => {
                   index={index}
                   zoneIndex={zoneIndex}
                 />
-              ))}
+              )).reverse()}
             </ul>
           </SortableContext>
         </div>

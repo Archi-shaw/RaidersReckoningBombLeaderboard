@@ -12,7 +12,7 @@ export default function Home() {
     {showSplash? (
       <SplashScreen onComplete = {() =>{setShowSplash(false)}} />
     ) : (
-   <div className="bg-container">
+   <div className="bg-container w-screen h-screen">
       <div className="overlay"></div>
       <GameTimer initialMinutes={5} initialSeconds={0} />
       <Leaderboard />

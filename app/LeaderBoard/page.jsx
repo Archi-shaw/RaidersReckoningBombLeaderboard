@@ -18,7 +18,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Target } from 'lucide-react';
-import zonesData from "@/app/data/Leaderboard.json";
+import {zone, zonesData} from "@/app/data/Leaderboard";
 
 const SortableTeam = ({ id, team, index }) => {
   const {
@@ -95,7 +95,7 @@ const SortableZone = ({ zone, zoneIndex }) => {
   }, [zone.endTime]);
 
   return (
-    <div className='bg-red-900 rounded-lg w-full max-w-[520px] mx-auto overflow-hidden'> {/* Adjusted width */}
+    <div className='bg-red-900 rounded-lg w-full h-full mx-auto overflow-hidden'> {/* Adjusted width */}
       <div className="bg-black opacity-85 backdrop-blur-sm p-3 md:p-4 rounded-lg border border-red-500/30 hover:border-red-500 transition-all duration-300 shadow-lg relative group">
         <div className="absolute -inset-[1px] bg-gradient-to-r from-red-500/20 to-transparent rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <div>
@@ -185,10 +185,18 @@ const ZonesDisplay = () => {
         onDragEnd={handleDragEnd}
         onDragStart={(event) => setActiveId(event.active.id.toString())}
       >
-        <div className="grid grid-cols-2 gap-8"> {/* Changed to grid-cols-2 for 2 columns */}
-          {zones.map((zone, zoneIndex) => (
-            <SortableZone key={zoneIndex} zone={zone} zoneIndex={zoneIndex} />
-          ))}
+        <div className="flex flex-col gap-8"> {/* Changed to grid-cols-2 for 2 columns */}
+          {/*{zones.map((zone, zoneIndex) => (*/}
+          {/*  <SortableZone key={zoneIndex} zone={zone} zoneIndex={zoneIndex} />*/}
+          {/*))}*/}
+          <div className={"flex gap-8 w-full h-1/2"}>
+            <SortableZone key={0} zone={zones[0]} zoneIndex={0} />
+            <SortableZone key={1} zone={zones[1]} zoneIndex={1} />
+          </div>
+          <div className={"flex gap-8 w-full h-1/2"}>
+            <SortableZone key={2} zone={zones[2]} zoneIndex={2}/>
+            <SortableZone key={3} zone={zones[3]} zoneIndex={3}/>
+          </div>
         </div>
         <DragOverlay>
           {activeId ? (

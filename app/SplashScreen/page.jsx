@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import zone from "@/app/data/LeaderBoard.json";
+import {zone} from "@/app/data/Leaderboard";
 
 export default function SplashScreen({ onComplete }) {
   const [fadeOut, setFadeOut] = useState(false);
@@ -44,7 +44,7 @@ export default function SplashScreen({ onComplete }) {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'api-key': process.env.API_KEY,
+            'api-key': "ap2_d495f0a7-f38c-4010-b819-d476ec6ad9bd",
           },
         });
 

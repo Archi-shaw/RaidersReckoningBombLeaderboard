@@ -18,7 +18,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Target } from 'lucide-react';
-import {zone, zonesData} from "@/app/data/Leaderboard";
+import {translateDataToZones} from "@/app/data/Leaderboard";
 import GameTimer from "@/app/GameTimer/page";
 
 const SortableTeam = ({ id, team, index }) => {
@@ -60,7 +60,7 @@ const SortableTeam = ({ id, team, index }) => {
           <span className="tracking-wide font-serif font-extrabold text-sm md:text-base">{team}</span>
         </div>
         <div onClick={(e) => e.stopPropagation()} className='font-dseg7'>
-          <TeamDetails team={team} details={teamDetails} className="" />
+          <TeamDetails team={team} details={teamDetails} index={index} className="" />
         </div>
       </div>
     </li>
@@ -71,29 +71,8 @@ const SortableTeam = ({ id, team, index }) => {
 const SortableZone = ({ zone, zoneIndex }) => {
   const [timeLeft, setTimeLeft] = useState('');
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      const end = new Date(zone.endTime);
-      const diff = end - now;
 
-      if (diff <= 0) {
-        clearInterval(interval);
-        setTimeLeft('00:00:00');
-        return;
-      }
 
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      setTimeLeft(
-        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-      );
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [zone.endTime]);
 
   return (
     <div className='bg-red-900 rounded-lg w-full h-full mx-auto overflow-hidden'> {/* Adjusted width */}
@@ -122,6 +101,7 @@ const SortableZone = ({ zone, zoneIndex }) => {
                   key={`${team}-${zoneIndex}`}
                   id={`${team}-${zoneIndex}`}
                   team={team}
+
                   index={index}
                   zoneIndex={zoneIndex}
                 />
@@ -135,8 +115,31 @@ const SortableZone = ({ zone, zoneIndex }) => {
 };
 
 const ZonesDisplay = () => {
-  const [zones, setZones] = useState(zonesData);
+  const [zones, setZones] = useState([]);
   const [activeId, setActiveId] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://141.148.219.124:18132/leaderboard');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const newData = await fetchData();
+      if (newData) {
+        setZones((state)=>{translateDataToZones(newData)});
+        console.log(zones[0]);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),

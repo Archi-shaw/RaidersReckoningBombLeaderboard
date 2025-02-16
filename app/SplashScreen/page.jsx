@@ -2,8 +2,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import {zone} from "@/app/data/Leaderboard";
-
 export default function SplashScreen({ onComplete }) {
   const [fadeOut, setFadeOut] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);

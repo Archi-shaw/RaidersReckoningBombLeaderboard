@@ -6,7 +6,7 @@ import Leaderboard from "@/app/LeaderBoard/page"
 import BackgroundMusic from "./BackgroundMusic/page";
 import React, { useState } from "react";
 export default function Home() {
-  const[showSplash,setShowSplash] = useState(true)
+  const[showSplash,setShowSplash] = useState(false)
   return (
     <>
     {showSplash? (

@@ -1,10 +1,11 @@
 import React from 'react';
 
-const TeamDetails = ({ team, details }) => {
+const TeamDetails = ({ team, details, index }) => {
+    // console.log(team, details, index)
   return (
     <div className="team-details">
-      <span>{details.minutes}</span><span> : </span>
-      <span>{details.seconds}</span>
+      {/*<span>{team.endTime[index]}</span><span> : </span>*/}
+      {/*<span>{team.endTime[index]}</span>*/}
     </div>
   );
 };

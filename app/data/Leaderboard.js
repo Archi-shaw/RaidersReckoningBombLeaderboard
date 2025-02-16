@@ -1,38 +1,14 @@
-// export const zone = [
-//     {
-//         "name": "Team 1",
-//         "passed": "Level 4",
-//         "teams": ["Level 8", "Level 7", "Level 6", "Level 5", "Level 4", "Level 3", "Level 2", "Level 1"],
-//         "status": "active",
-//         "endTime": "2025-01-31T10:00:00.000Z"
-//     },
-//     {
-//         "name": "Team 2",
-//         "passed": "Level 4",
-//         "teams": ["Level 8", "Level 7", "Level 6", "Level 5", "Level 4", "Level 3", "Level 2", "Level 1"],
-//         "status": "active",
-//         "endTime": "2025-01-31T10:00:00.000Z"
-//     },
-//     {
-//         "name": "Team 3",
-//         "passed": "Level 4",
-//         "teams": ["Level 8", "Level 7", "Level 6", "Level 5", "Level 4", "Level 3", "Level 2", "Level 1"],
-//         "status": "active",
-//         "endTime": "2025-01-31T10:00:00.000Z"
-//     },
-//     {
-//         "name": "Team 4",
-//         "passed": "Level 4",
-//         "teams": ["Level 8", "Level 7", "Level 6", "Level 5", "Level 4", "Level 3", "Level 2", "Level 1"],
-//         "status": "active",
-//         "endTime": "2025-01-31T10:00:00.000Z"
-//     }
-// ]
-//
-// export const zonesData = zone
-
 export const translateDataToZones = (data) => {
-    const groupedData = data.reduce((acc, item) => {
+    // Filter data to only include objects with the required properties
+    const filteredData = data.filter(item =>
+        item.hasOwnProperty('bomb_id') &&
+        item.hasOwnProperty('level') &&
+        item.hasOwnProperty('time') &&
+        item.hasOwnProperty('ip')
+    );
+    // console.log(data);
+    // Group the filtered data by bomb_id
+    const groupedData = filteredData.reduce((acc, item) => {
         if (!acc[item.bomb_id]) {
             acc[item.bomb_id] = [];
         }
@@ -40,6 +16,7 @@ export const translateDataToZones = (data) => {
         return acc;
     }, {});
 
+    // Map the grouped data to the desired format
     return Object.keys(groupedData).map((bomb_id) => {
         const bombData = groupedData[bomb_id];
         const levels = Array.from({ length: 8 }, (_, i) => i + 1);
@@ -53,7 +30,8 @@ export const translateDataToZones = (data) => {
             passed: `Level ${Math.max(...bombData.map(item => item.level))}`,
             teams: ["Level 8", "Level 7", "Level 6", "Level 5", "Level 4", "Level 3", "Level 2", "Level 1"],
             status: "active",
-            endTime: endTime
+            endTime: endTime,
+            ip: bombData[bombData.length-1].ip // Assuming all entries for the same bomb_id have the same ip
         };
     });
 };

@@ -21,7 +21,7 @@ import { Target } from 'lucide-react';
 import {translateDataToZones} from "@/app/data/Leaderboard";
 import GameTimer from "@/app/GameTimer/page";
 
-const SortableTeam = ({ id, team, index }) => {
+const SortableTeam = ({ id, team, endTime, index }) => {
   const {
     attributes,
     listeners,
@@ -30,7 +30,6 @@ const SortableTeam = ({ id, team, index }) => {
     transition,
     isDragging,
   } = useSortable({ id });
-
   const teamDetails = {
     minutes: 50,
     seconds: 25,
@@ -60,7 +59,7 @@ const SortableTeam = ({ id, team, index }) => {
           <span className="tracking-wide font-serif font-extrabold text-sm md:text-base">{team}</span>
         </div>
         <div onClick={(e) => e.stopPropagation()} className='font-dseg7'>
-          <TeamDetails team={team} details={teamDetails} index={index} className="" />
+          <TeamDetails zone={endTime} details={teamDetails} index={index} className="" />
         </div>
       </div>
     </li>
@@ -69,11 +68,6 @@ const SortableTeam = ({ id, team, index }) => {
 
 
 const SortableZone = ({ zone, zoneIndex }) => {
-  const [timeLeft, setTimeLeft] = useState('');
-
-
-
-
   return (
     <div className='bg-red-900 rounded-lg w-full h-full mx-auto overflow-hidden'> {/* Adjusted width */}
       <div className="bg-black opacity-85 backdrop-blur-sm p-3 md:p-4 rounded-lg border border-red-500/30 hover:border-red-500 transition-all duration-300 shadow-lg relative group">
@@ -83,31 +77,26 @@ const SortableZone = ({ zone, zoneIndex }) => {
             <div className="flex w-full justify-between items-center gap-3 mb-3">
               <h2 className="flex items-center gap-2 text-xl md:text-2xl font-bold tracking-tight font-serif">
                 <Target className="w-6 h-6 text-red-500"/>
-                {zone.name}</h2>
+                {zone?.name}</h2>
               <span className="font-dseg7 text-2xl text-orange-600 text-shadow-lg shadow-orange-500/50">
-                192.168.1.1
+                {zone?.ip}
               </span>
               <GameTimer initialMinute={15} initialSecond={0}/>
             </div>
           </div>
 
-          <SortableContext
-              items={zone.teams.map((team) => `${team}-${zoneIndex}`)}
-              strategy={verticalListSortingStrategy}
-          >
             <ul className="space-y-1">
-              {zone.teams.map((team, index) => (
+              {zone && zone?.teams.map((team, index) => (
                 <SortableTeam
                   key={`${team}-${zoneIndex}`}
                   id={`${team}-${zoneIndex}`}
                   team={team}
-
+                  endTime={zone.endTime}
                   index={index}
                   zoneIndex={zoneIndex}
                 />
               )).reverse()}
             </ul>
-          </SortableContext>
         </div>
       </div>
     </div>
@@ -133,13 +122,18 @@ const ZonesDisplay = () => {
     const interval = setInterval(async () => {
       const newData = await fetchData();
       if (newData) {
-        setZones((state)=>{translateDataToZones(newData)});
-        console.log(zones[0]);
+        setZones((state)=>{
+          return translateDataToZones(newData)
+        });
+
       }
+      console.log("update");
     }, 1000);
 
     return () => clearInterval(interval);
   }, []);
+
+  console.log(zones);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -148,51 +142,11 @@ const ZonesDisplay = () => {
     })
   );
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeTeamId = active.id.toString();
-    const [team, sourceZoneIndex] = activeTeamId.split('-');
-    const overZoneId = over.id.toString().split('-')[1];
-
-    if (sourceZoneIndex !== overZoneId) {
-      setZones((zones) => {
-        const newZones = [...zones];
-        const sourceZone = newZones[parseInt(sourceZoneIndex)];
-        const targetZone = newZones[parseInt(overZoneId)];
-
-        sourceZone.teams = sourceZone.teams.filter((t) => t !== team);
-        targetZone.teams.push(team);
-
-        return newZones;
-      });
-    }
-
-    setActiveId(null);
-  };
-
-  const handleShuffle = () => {
-    const shuffledZones = [...zones].map((zone) => ({
-      ...zone,
-      teams: [...zone.teams].sort(() => Math.random() - 0.5),
-    }));
-    setZones(shuffledZones);
-  };
-
-  const handleUpdateZones = () => {
-    console.log('Zones updated:', zones);
-  };
-
   return (
     <div className="text-white p-4 mb-2 font-sans relative overflow-hidden">
       <div className="absolute inset-0 opacity-5 pointer-events-none" />
 
       <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-        onDragStart={(event) => setActiveId(event.active.id.toString())}
       >
         <div className="flex flex-col gap-8"> {/* Changed to grid-cols-2 for 2 columns */}
           {/*{zones.map((zone, zoneIndex) => (*/}
